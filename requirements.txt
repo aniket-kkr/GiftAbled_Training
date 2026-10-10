@@ -1,0 +1,5 @@
+# No external dependencies required.
+# This project uses only Python's built-in modules:
+#   - csv
+#   - os
+#   - unittest
