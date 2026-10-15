@@ -1,0 +1,7 @@
+Chosen Part B problem: GCD (greatest common divisor).
+
+I chose GCD because Euclid's algorithm is short, efficient, and gives practice with while loops and the remainder operator.
+
+One thing that did not work at first: I forgot to update both values in the loop, which meant the loop did not make progress. I fixed it by replacing (a, b) with (b, a % b) on every iteration.
+
+I would use a for loop when iterating over a known sequence or a known number of repetitions. I would use a while loop when the number of repetitions depends on a condition, such as continuing Euclid's algorithm until the remainder becomes zero.
