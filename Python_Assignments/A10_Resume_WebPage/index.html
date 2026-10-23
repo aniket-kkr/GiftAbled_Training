@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aniket Kumar's resume: backend engineering, full-stack development, projects, and achievements.">
+    <title>Aniket Kumar | Resume</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #192b3a;
+            --muted: #526577;
+            --accent: #087e8b;
+            --line: #d8e2e9;
+            --paper: #ffffff;
+            --canvas: #eef3f6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--canvas);
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration-thickness: 1px;
+            text-underline-offset: 3px;
+        }
+
+        a:hover {
+            color: #075c66;
+        }
+
+        .resume {
+            width: min(100% - 32px, 940px);
+            margin: 36px auto;
+            padding: 48px 58px;
+            background: var(--paper);
+            border-radius: 12px;
+            box-shadow: 0 12px 36px rgb(25 43 58 / 9%);
+        }
+
+        .header {
+            padding-bottom: 24px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 2.8rem);
+            letter-spacing: -0.04em;
+            line-height: 1.15;
+        }
+
+        .headline {
+            margin: 8px 0 14px;
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        .contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 20px;
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .contact a {
+            overflow-wrap: anywhere;
+        }
+
+        section {
+            margin-top: 27px;
+        }
+
+        h2 {
+            margin: 0 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid var(--line);
+            color: var(--accent);
+            font-size: 1.05rem;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        p {
+            margin: 0 0 8px;
+        }
+
+        .entry {
+            margin-bottom: 17px;
+        }
+
+        .entry:last-child {
+            margin-bottom: 0;
+        }
+
+        .entry-heading {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 4px 16px;
+            align-items: baseline;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        ul {
+            margin: 8px 0 0;
+            padding-left: 21px;
+        }
+
+        li {
+            margin: 0 0 6px;
+            padding-left: 2px;
+        }
+
+        .skills p {
+            margin-bottom: 7px;
+        }
+
+        .skills strong {
+            color: var(--ink);
+        }
+
+        @media (max-width: 600px) {
+            .resume {
+                width: 100%;
+                margin: 0;
+                padding: 30px 22px;
+                border-radius: 0;
+            }
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                font-size: 10pt;
+            }
+
+            .resume {
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                box-shadow: none;
+            }
+
+            section {
+                margin-top: 18px;
+                break-inside: avoid;
+            }
+
+            a {
+                color: inherit;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="resume">
+        <header class="header">
+            <h1>Aniket Kumar</h1>
+            <p class="headline">Information Technology Undergraduate | Backend Engineering &amp; Full-Stack Development</p>
+            <p class="contact">
+                <a href="tel:+919667470811">+91-9667470811</a>
+                <a href="mailto:aniketkkr217217@gmail.com">aniketkkr217217@gmail.com</a>
+                <a href="https://linkedin.com/in/aniket-kumar-0b2b2b2b/" target="_blank" rel="noopener noreferrer">LinkedIn profile</a>
+                <a href="https://github.com/aniket-kkr" target="_blank" rel="noopener noreferrer">GitHub profile</a>
+            </p>
+        </header>
+
+        <section aria-labelledby="summary-heading">
+            <h2 id="summary-heading">Professional Summary</h2>
+            <p>Information Technology undergraduate at IIIT Allahabad specializing in backend engineering and full-stack development. Ranked Top 15 of 126,000+ participants in the Google Big Code Challenge 2026 and Top 75 nationally at HackOn with Amazon 6.0. Proven track record shipping production-ready REST APIs, payment-integrated platforms, and AI inference pipelines, backed by 1500+ solved DSA problems and strong CS fundamentals.</p>
+        </section>
+
+        <section aria-labelledby="education-heading">
+            <h2 id="education-heading">Education</h2>
+            <div class="entry">
+                <div class="entry-heading">
+                    <h3>Indian Institute of Information Technology, Allahabad</h3>
+                    <span class="meta">Allahabad, India</span>
+                </div>
+                <div class="entry-heading">
+                    <p>B.Tech in Information Technology; CGPA: 7.09/10</p>
+                    <span class="meta">2023 – Present</span>
+                </div>
+            </div>
+        </section>
+
+        <section aria-labelledby="experience-heading">
+            <h2 id="experience-heading">Startup Experience</h2>
+            <div class="entry">
+                <div class="entry-heading">
+                    <h3>MenuVerse – Restaurant Management Platform</h3>
+                    <span class="meta">Siliguri</span>
+                </div>
+                <p class="meta">Backend Developer</p>
+                <ul>
+                    <li>Developed a full-stack QR-based restaurant management platform using React, Node.js, Express, and PostgreSQL (Supabase), enabling digital menu browsing, contactless ordering, and billing.</li>
+                    <li>Implemented secure JWT authentication and bcrypt-based password encryption, and secured REST APIs for user authentication and restaurant operations.</li>
+                    <li>Built scalable RESTful APIs for restaurant, menu, order, and notification management with Axios integration, implementing rate limiting, CORS, and centralized error handling.</li>
+                    <li>Designed a real-time order tracking system with push notifications, enabling efficient table management, order processing, and seamless customer experience.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section aria-labelledby="projects-heading">
+            <h2 id="projects-heading">Projects</h2>
+            <div class="entry">
+                <div class="entry-heading">
+                    <h3>Campus Utility App</h3>
+                    <span class="meta">Node.js | SQL | REST APIs | Cloudinary</span>
+                </div>
+                <ul>
+                    <li>Architected a production-ready, campus-deployable full-stack application with a structured SQL database schema for centralized asset tracking, enabling fast lookups, strong referential integrity, and efficient item-matching queries at institute scale.</li>
+                    <li>Integrated REST APIs with Cloudinary storage and robust backend request validation, applying TDD principles with unit tests around core validation and matching logic to ensure reliability for everyday campus use.</li>
+                    <li>Built an administrative validation dashboard to track item authentication statuses, mitigating fraud and increasing item recovery rates by 60%.</li>
+                    <li>Optimized query performance and API response times, hardening the application for stable, campus-ready deployment under concurrent traffic from students and staff.</li>
+                </ul>
+            </div>
+            <div class="entry">
+                <div class="entry-heading">
+                    <h3>NeuroLens</h3>
+                    <span class="meta">TypeScript | React | Tailwind CSS | Chrome Extension (MV3) | ONNX | Transformers.js</span>
+                </div>
+                <ul>
+                    <li>Engineered a production-ready browser extension enhancing web accessibility for neurodivergent users (ADHD, Autism, Dyslexia) via a modular, multi-threaded architecture built for enterprise-scale reliability.</li>
+                    <li>Deployed a quantized DistilBART model for localized AI text simplification via ONNX Runtime, guaranteeing zero data transmission latency and absolute user data privacy, with optimized CPU cycle efficiency.</li>
+                    <li>Selected as a Top 15 finalist (of 126,000+ global entrants) in the Google Big Code Challenge 2026, advancing through 5 selective rounds and presenting live at Google Ananta, Bengaluru.</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="skills" aria-labelledby="competencies-heading">
+            <h2 id="competencies-heading">Core Competencies</h2>
+            <p><strong>Languages:</strong> C++ | JavaScript | TypeScript | Python | SQL</p>
+            <p><strong>Backend &amp; APIs:</strong> Node.js | Express | RESTful API Design | JWT Auth | bcrypt | Rate Limiting | CORS | Error Handling</p>
+            <p><strong>Frontend:</strong> React | Tailwind CSS | Chrome Extension (MV3)</p>
+            <p><strong>Databases:</strong> PostgreSQL (Supabase) | MySQL | Schema Design | Query Optimization | Joins | Subqueries | Indexing</p>
+            <p><strong>CS Fundamentals:</strong> Data Structures &amp; Algorithms (1500+ problems solved) | Operating Systems | OOP | System Design Basics</p>
+            <p><strong>Tools &amp; Technologies:</strong> Git | Linux | Docker | AWS | Cloudinary | Postman</p>
+            <p><strong>AI/ML Tooling:</strong> ONNX Runtime | Transformers.js | Client-side Model Inference</p>
+        </section>
+
+        <section aria-labelledby="achievements-heading">
+            <h2 id="achievements-heading">Achievements &amp; Certifications</h2>
+            <ul>
+                <li>Google Big Code Challenge 2026: Ranked Top 15 of 126k+ global participants; advanced through 5 selective rounds; presented NeuroLens live at Google Ananta, Bengaluru.</li>
+                <li>HackOn With Amazon 6.0: Ranked Top 75 Coders nationally for architectural design speed and optimization aligned with enterprise engineering standards.</li>
+                <li>HackVega 2.0 Finalist | Flipkart Grid 8.0 National Semifinalist, ranked within the Top 1% of engineering teams across India.</li>
+                <li>Competitive Programming: Solved 1500+ algorithmic problems across major platforms; earned Knight designation on LeetCode.</li>
+            </ul>
+        </section>
+    </main>
+</body>
+</html>
