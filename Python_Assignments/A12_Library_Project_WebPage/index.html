@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Overview and technical documentation of the Python Library Management System with CSV persistence by Aniket Kumar.">
+    <title>Library Project | Aniket Kumar</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #0ea5e9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --border: #e2e8f0;
+            --terminal-bg: #0f172a;
+            --terminal-text: #38bdf8;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: white;
+            padding: 4rem 1.5rem;
+            text-align: center;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 0.3rem 0.8rem;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .author-tag {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+        }
+
+        .author-tag strong {
+            color: #ffffff;
+        }
+
+        main {
+            max-width: 1050px;
+            margin: -2rem auto 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.5rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .feature-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.25rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-light);
+        }
+
+        .feature-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+
+        .feature-desc {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: #f1f5f9;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8fafc;
+        }
+
+        code {
+            background: #e2e8f0;
+            color: #0f172a;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.88em;
+        }
+
+        pre {
+            background: var(--terminal-bg);
+            color: #e2e8f0;
+            padding: 1.25rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .terminal-window {
+            background: var(--terminal-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            margin-top: 1rem;
+        }
+
+        .terminal-header {
+            background: #1e293b;
+            padding: 0.6rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .terminal-title {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+            font-family: monospace;
+        }
+
+        .terminal-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-term {
+            background: #334155;
+            color: #f8fafc;
+            border: none;
+            padding: 0.3rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-term:hover {
+            background: #475569;
+        }
+
+        .terminal-body {
+            padding: 1.25rem;
+            color: #38bdf8;
+            font-family: ui-monospace, monospace;
+            font-size: 0.9rem;
+            min-height: 220px;
+            white-space: pre-wrap;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: steps;
+        }
+
+        .step-item {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .step-item::before {
+            counter-increment: steps;
+            content: counter(steps);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.8rem;
+            height: 1.8rem;
+            background: var(--primary-light);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            background: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <span class="badge">ASSIGNMENT 12 &bull; PROJECT SHOWCASE</span>
+            <h1>Library Management System</h1>
+            <p class="subtitle">A full-featured command-line multi-library catalog and inventory manager built using Python 3, object-oriented design, and robust CSV persistence.</p>
+            <div class="author-tag">Developed by <strong>Aniket Kumar</strong> &bull; GiftAbled Training Program</div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Project Overview -->
+        <section class="card">
+            <h2>📌 Project Overview</h2>
+            <p>
+                The <strong>Library Management System</strong> is a Python-based console application designed to help librarians and users manage multiple library branches, track books across different libraries, perform fast indexed searches, and ensure safe data persistence across system restarts without external database dependencies.
+            </p>
+            <div class="grid-3">
+                <div class="feature-box">
+                    <div class="feature-icon">📚</div>
+                    <div class="feature-title">Multiple Libraries</div>
+                    <div class="feature-desc">Organize books into distinct branches (e.g. City Library, Central College Library) with isolated tracking.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🔍</div>
+                    <div class="feature-title">Multi-Field Search</div>
+                    <div class="feature-desc">Case-insensitive substring search across Book Title, Author Name, and unique ISBN identifiers.</div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">💾</div>
+                    <div class="feature-title">CSV Persistence</div>
+                    <div class="feature-desc">Automatic saving and reading from <code>data/libraries.csv</code> and <code>data/books.csv</code> with zero data loss.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Architecture & File Structure -->
+        <section class="card">
+            <h2>🏗️ Project Architecture</h2>
+            <p>The project follows modular software design principles, separating user interaction, business logic, and persistent storage layers.</p>
+            <pre>
+Library/
+├── main.py                # User Interface: Interactive 8-option CLI menu loop
+├── library_manager.py     # Business Logic: LibraryManager class managing records & validation
+├── csv_storage.py         # Data Layer: CSV read/write serialization helpers
+├── data/                  # Persistent Storage Directory (auto-created on startup)
+│   ├── libraries.csv      # Library records (ID, Name)
+│   └── books.csv          # Books catalog (ID, Title, Author, ISBN, Year, Library ID)
+└── tests/
+    └── test_library.py    # Automated test suite using Python unittest
+            </pre>
+        </section>
+
+        <!-- Data Schemas -->
+        <section class="card">
+            <h2>📊 Data Model & Storage Specifications</h2>
+            <p>Data persistence is implemented using Python's native <code>csv</code> module with explicit headers and atomic write handling.</p>
+            
+            <h3 style="font-size: 1.1rem; margin-top: 1rem; color: var(--text-main);">1. <code>data/libraries.csv</code></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Type</th>
+                        <th>Constraint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>library_id</code></td>
+                        <td>String</td>
+                        <td>Primary Key, Unique, Non-empty</td>
+                        <td>Unique identifier for the library branch (e.g., L1, L2).</td>
+                    </tr>
+                    <tr>
+                        <td><code>library_name</code></td>
+                        <td>String</td>
+                        <td>Required</td>
+                        <td>Display name of the branch (e.g., Central Library).</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="font-size: 1.1rem; margin-top: 1.5rem; color: var(--text-main);">2. <code>data/books.csv</code></h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field Name</th>
+                        <th>Type</th>
+                        <th>Constraint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>book_id</code></td>
+                        <td>String</td>
+                        <td>Primary Key, Unique</td>
+                        <td>Unique catalog ID for the book (e.g., B101).</td>
+                    </tr>
+                    <tr>
+                        <td><code>title</code></td>
+                        <td>String</td>
+                        <td>Required</td>
+                        <td>Book title.</td>
+                    </tr>
+                    <tr>
+                        <td><code>author</code></td>
+                        <td>String</td>
+                        <td>Required</td>
+                        <td>Author's full name.</td>
+                    </tr>
+                    <tr>
+                        <td><code>isbn</code></td>
+                        <td>String</td>
+                        <td>Standard Format</td>
+                        <td>International Standard Book Number.</td>
+                    </tr>
+                    <tr>
+                        <td><code>publication_year</code></td>
+                        <td>Integer</td>
+                        <td>1000 &le; Year &le; Current</td>
+                        <td>Four-digit publication year.</td>
+                    </tr>
+                    <tr>
+                        <td><code>library_id</code></td>
+                        <td>String</td>
+                        <td>Foreign Key</td>
+                        <td>References <code>libraries.csv</code> branch ID.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Interactive CLI Demo Simulator -->
+        <section class="card">
+            <h2>💻 Interactive CLI Simulator</h2>
+            <p>Click the buttons below to preview simulated interactive commands and terminal outputs from the application.</p>
+            
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot dot-red"></span>
+                    <span class="terminal-dot dot-yellow"></span>
+                    <span class="terminal-dot dot-green"></span>
+                    <span class="terminal-title">bash - python main.py</span>
+                    <div class="terminal-actions">
+                        <button class="btn-term" onclick="showOutput('menu')">Main Menu</button>
+                        <button class="btn-term" onclick="showOutput('add_lib')">Add Library</button>
+                        <button class="btn-term" onclick="showOutput('add_book')">Add Book</button>
+                        <button class="btn-term" onclick="showOutput('search')">Search Books</button>
+                    </div>
+                </div>
+                <div class="terminal-body" id="termOutput">
+==================================================
+       LIBRARY MANAGEMENT SYSTEM
+==================================================
+  1. Add Library
+  2. View All Libraries
+  3. Add Book
+  4. View Books in a Library
+  5. View All Books
+  6. Search Books
+  7. Display CSV Data
+  8. Exit
+==================================================
+Enter your choice (1-8):
+(Click any button above to simulate action)
+                </div>
+            </div>
+        </section>
+
+        <!-- How to Run -->
+        <section class="card">
+            <h2>🚀 Quickstart & Execution</h2>
+            <ul class="step-list">
+                <li class="step-item">
+                    <strong>Clone repository</strong>
+                    <pre><code>git clone https://github.com/aniket-kkr/GiftAbled_Training.git
+cd GiftAbled_Training</code></pre>
+                </li>
+                <li class="step-item">
+                    <strong>Launch the console application</strong>
+                    <pre><code>python main.py</code></pre>
+                </li>
+                <li class="step-item">
+                    <strong>Run the automated test suite</strong>
+                    <pre><code>python -m unittest discover tests -v</code></pre>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Aniket Kumar &bull; GiftAbled Training &bull; Python & Web Development Track</p>
+    </footer>
+
+    <script>
+        const outputs = {
+            menu: `==================================================
+       LIBRARY MANAGEMENT SYSTEM
+==================================================
+  1. Add Library
+  2. View All Libraries
+  3. Add Book
+  4. View Books in a Library
+  5. View All Books
+  6. Search Books
+  7. Display CSV Data
+  8. Exit
+==================================================
+Enter your choice (1-8): `,
+            add_lib: `--- Add New Library ---
+Enter Library ID: L1
+Enter Library Name: City Central Library
+Success: Library 'City Central Library' (ID: L1) added.
+Data persisted to data/libraries.csv`,
+            add_book: `--- Add New Book ---
+Available Libraries:
+  Library ID      Library Name
+  ---------------------------------------------
+  L1              City Central Library
+
+Enter Library ID to add the book to: L1
+Enter Book ID: B101
+Enter Book Title: Fluent Python
+Enter Author: Luciano Ramalho
+Enter ISBN: 978-1491946008
+Enter Publication Year: 2022
+Success: Book 'Fluent Python' added to library 'City Central Library'.`,
+            search: `--- Search Books ---
+Enter search keyword (title / author / ISBN): Python
+
+Search results for 'Python':
+  Book ID    Title               Author             ISBN             Year   Library
+  ------------------------------------------------------------------------------------------
+  B101       Fluent Python       Luciano Ramalho    978-1491946008   2022   City Central Library
+  B102       Python Crash Course Eric Matthes       978-1593279288   2021   City Central Library`
+        };
+
+        function showOutput(key) {
+            document.getElementById('termOutput').textContent = outputs[key];
+        }
+    </script>
+</body>
+</html>

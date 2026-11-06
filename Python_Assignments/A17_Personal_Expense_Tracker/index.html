@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Expense Tracker | Full CRUD</title>
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-hover: #047857;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --bg: #f0fdf4;
+            --card-bg: #ffffff;
+            --text-main: #064e3b;
+            --text-body: #1f2937;
+            --text-muted: #6b7280;
+            --border: #d1fae5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-body);
+            padding-bottom: 4rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%);
+            color: white;
+            padding: 2.75rem 1.5rem;
+            text-align: center;
+        }
+
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .badge-app {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.3rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.6rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #d1fae5;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: -1.75rem auto 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.25rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: #d1fae5;
+            color: var(--primary);
+        }
+
+        .stat-val {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* 2 Column Layout: Left Category Breakdown, Right Expenses */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 900px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Category Breakdown */
+        .category-item {
+            margin-bottom: 1rem;
+        }
+
+        .cat-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.88rem;
+            margin-bottom: 0.35rem;
+            font-weight: 600;
+        }
+
+        .cat-bar-bg {
+            background: #e5e7eb;
+            height: 8px;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .cat-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            border-radius: 9999px;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .search-inputs {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .search-inputs input, .search-inputs select {
+            padding: 0.65rem 0.85rem;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            font-size: 0.92rem;
+            outline: none;
+            background: white;
+        }
+
+        .search-inputs input { flex: 2; }
+        .search-inputs select { flex: 1; }
+
+        .search-inputs input:focus, .search-inputs select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.93rem;
+        }
+
+        th {
+            background: #f0fdf4;
+            padding: 0.85rem 0.75rem;
+            color: #065f46;
+            font-weight: 700;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 0.85rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #f7fee7;
+        }
+
+        .cat-tag {
+            display: inline-block;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .pm-badge {
+            display: inline-block;
+            background: #f3f4f6;
+            color: #374151;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-top: 0.2rem;
+        }
+
+        .amount-tag {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .btn-action {
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .btn-edit { background: #e0f2fe; color: #0369a1; }
+        .btn-edit:hover { background: #bae6fd; }
+
+        .btn-delete { background: #fee2e2; color: #b91c1c; }
+        .btn-delete:hover { background: #fca5a5; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(6, 78, 59, 0.4);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: white;
+            border-radius: 14px;
+            width: 100%;
+            max-width: 480px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid #a7f3d0;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-cancel { background: #e2e8f0; color: #475569; }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #064e3b;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 200;
+            font-size: 0.95rem;
+        }
+
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <span class="badge-app">FINANCIAL MANAGEMENT &bull; ASSIGNMENT 17</span>
+            <h1>Personal Expense Tracker</h1>
+            <p class="subtitle">HTML, JavaScript, and FastAPI Integrated Full-Stack CRUD Application</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div>
+                    <div class="stat-val" id="statTotalSpent">₹0</div>
+                    <div class="stat-lbl">Total Spent</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🧾</div>
+                <div>
+                    <div class="stat-val" id="statTxCount">0</div>
+                    <div class="stat-lbl">Transactions</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div>
+                    <div class="stat-val" id="statAvgSpent">₹0</div>
+                    <div class="stat-lbl">Average Expense</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚡</div>
+                <div>
+                    <div class="stat-val" id="statMaxSpent">₹0</div>
+                    <div class="stat-lbl">Highest Expense</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 Column Layout -->
+        <div class="layout-grid">
+            <!-- Sidebar: Category Breakdown -->
+            <div class="card">
+                <h2>Category Spending</h2>
+                <div id="categoryBreakdownList">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Main Ledger -->
+            <div class="card">
+                <div class="controls">
+                    <div class="search-inputs">
+                        <input type="text" id="searchInput" placeholder="Search expense, merchant..." oninput="handleSearch()">
+                        <select id="categoryFilter" onchange="handleSearch()">
+                            <option value="All">All Categories</option>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Bills & Utilities">Bills & Utilities</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Education">Education</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="openAddModal()">
+                        <span>➕</span> Add Expense
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Expense & Notes</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th style="text-align: right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expensesTableBody">
+                            <!-- Loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="expenseModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Expense</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="expenseForm" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="expenseId">
+                <div class="form-group">
+                    <label for="expenseTitle">Expense Title / Merchant *</label>
+                    <input type="text" id="expenseTitle" required placeholder="e.g. Monthly Grocery">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expenseAmount">Amount (₹) *</label>
+                        <input type="number" id="expenseAmount" required min="1" step="0.5" placeholder="e.g. 1500">
+                    </div>
+                    <div class="form-group">
+                        <label for="expenseCategory">Category *</label>
+                        <select id="expenseCategory" required>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Bills & Utilities">Bills & Utilities</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Education">Education</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expenseDate">Date *</label>
+                        <input type="date" id="expenseDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expensePaymentMethod">Payment Method *</label>
+                        <select id="expensePaymentMethod" required>
+                            <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="Net Banking">Net Banking</option>
+                            <option value="Cash">Cash</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="expenseNotes">Notes / Description (Optional)</label>
+                    <input type="text" id="expenseNotes" placeholder="e.g. Bought from Reliance Fresh">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn">Save Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let allExpenses = [];
+
+        async function fetchSummary() {
+            try {
+                const res = await fetch('/api/summary');
+                const data = await res.json();
+                document.getElementById('statTotalSpent').textContent = `₹${data.total_spent.toLocaleString('en-IN')}`;
+                document.getElementById('statTxCount').textContent = data.total_transactions;
+                document.getElementById('statAvgSpent').textContent = `₹${data.average_expense.toLocaleString('en-IN')}`;
+                document.getElementById('statMaxSpent').textContent = `₹${data.highest_expense.toLocaleString('en-IN')}`;
+
+                const listContainer = document.getElementById('categoryBreakdownList');
+                listContainer.innerHTML = '';
+                if (data.category_breakdown.length === 0) {
+                    listContainer.innerHTML = `<p style="color:#94a3b8;font-size:0.9rem;">No category data recorded.</p>`;
+                    return;
+                }
+
+                data.category_breakdown.forEach(cat => {
+                    const div = document.createElement('div');
+                    div.className = 'category-item';
+                    div.innerHTML = `
+                        <div class="cat-meta">
+                            <span>${escapeHtml(cat.category)}</span>
+                            <span>₹${cat.total.toLocaleString('en-IN')} (${cat.percentage}%)</span>
+                        </div>
+                        <div class="cat-bar-bg">
+                            <div class="cat-bar-fill" style="width: ${cat.percentage}%;"></div>
+                        </div>
+                    `;
+                    listContainer.appendChild(div);
+                });
+            } catch (err) {
+                console.error("Failed to load summary", err);
+            }
+        }
+
+        async function loadExpenses(search = '', category = 'All') {
+            try {
+                let url = '/api/expenses?';
+                if (search) url += `search=${encodeURIComponent(search)}&`;
+                if (category && category !== 'All') url += `category=${encodeURIComponent(category)}&`;
+
+                const res = await fetch(url);
+                allExpenses = await res.json();
+                renderTable(allExpenses);
+                fetchSummary();
+            } catch (err) {
+                showToast("Failed to fetch expense records", "error");
+            }
+        }
+
+        function renderTable(expenses) {
+            const tbody = document.getElementById('expensesTableBody');
+            tbody.innerHTML = '';
+
+            if (expenses.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 2rem; color: #94a3b8;">No matching expenses recorded.</td></tr>`;
+                return;
+            }
+
+            expenses.forEach(e => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(e.date)}</strong></td>
+                    <td>
+                        <strong>${escapeHtml(e.title)}</strong>
+                        ${e.notes ? `<div style="font-size:0.8rem;color:var(--text-muted);">${escapeHtml(e.notes)}</div>` : ''}
+                        <div class="pm-badge">💳 ${escapeHtml(e.payment_method)}</div>
+                    </td>
+                    <td><span class="cat-tag">${escapeHtml(e.category)}</span></td>
+                    <td><span class="amount-tag">-₹${e.amount.toLocaleString('en-IN')}</span></td>
+                    <td style="text-align: right;">
+                        <button class="btn-action btn-edit" onclick="openEditModal(${e.id})">Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteExpense(${e.id}, '${escapeHtml(e.title)}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleSearch() {
+            const search = document.getElementById('searchInput').value;
+            const cat = document.getElementById('categoryFilter').value;
+            loadExpenses(search, cat);
+        }
+
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = "Add New Expense";
+            document.getElementById('expenseId').value = "";
+            document.getElementById('expenseForm').reset();
+            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseModal').classList.add('active');
+        }
+
+        function openEditModal(id) {
+            const exp = allExpenses.find(e => e.id === id);
+            if (!exp) return;
+
+            document.getElementById('modalTitle').textContent = "Edit Expense";
+            document.getElementById('expenseId').value = exp.id;
+            document.getElementById('expenseTitle').value = exp.title;
+            document.getElementById('expenseAmount').value = exp.amount;
+            document.getElementById('expenseCategory').value = exp.category;
+            document.getElementById('expenseDate').value = exp.date;
+            document.getElementById('expensePaymentMethod').value = exp.payment_method;
+            document.getElementById('expenseNotes').value = exp.notes || '';
+
+            document.getElementById('expenseModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('expenseModal').classList.remove('active');
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('expenseId').value;
+            const payload = {
+                title: document.getElementById('expenseTitle').value,
+                amount: parseFloat(document.getElementById('expenseAmount').value),
+                category: document.getElementById('expenseCategory').value,
+                date: document.getElementById('expenseDate').value,
+                payment_method: document.getElementById('expensePaymentMethod').value,
+                notes: document.getElementById('expenseNotes').value
+            };
+
+            try {
+                if (id) {
+                    const res = await fetch(`/api/expenses/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const resData = await res.json();
+                    if (!res.ok) throw new Error(resData.detail || "Failed to update expense");
+                    showToast("Expense updated successfully", "success");
+                } else {
+                    const res = await fetch('/api/expenses', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const resData = await res.json();
+                    if (!res.ok) throw new Error(resData.detail || "Failed to add expense");
+                    showToast("Expense logged successfully", "success");
+                }
+                closeModal();
+                handleSearch();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function deleteExpense(id, title) {
+            if (!confirm(`Are you sure you want to delete expense "${title}"?`)) return;
+
+            try {
+                const res = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error("Failed to delete expense");
+                showToast(`Expense "${title}" deleted`, "success");
+                handleSearch();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Set today's date and load
+        loadExpenses();
+    </script>
+</body>
+</html>

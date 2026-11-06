@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Catalog & Inventory | CRUD</title>
+    <style>
+        :root {
+            --primary: #0f766e;
+            --primary-hover: #115e59;
+            --accent: #d97706;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding-bottom: 4rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+            color: white;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #99f6e4;
+            font-size: 1rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: -1.5rem auto 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.25rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            background: #ccfbf1;
+            color: var(--primary);
+        }
+
+        .stat-val {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Controls */
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 0.75rem;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .search-row input, .search-row select {
+            padding: 0.65rem 0.9rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .search-row input {
+            flex: 2;
+        }
+
+        .search-row select {
+            flex: 1;
+        }
+
+        .search-row input:focus, .search-row select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        /* Actions */
+        .btn-action {
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .btn-borrow { background: #dcfce7; color: var(--success); }
+        .btn-borrow:hover { background: #bbf7d0; }
+
+        .btn-return { background: #e0f2fe; color: #0284c7; }
+        .btn-return:hover { background: #bae6fd; }
+
+        .btn-edit { background: #fef3c7; color: #b45309; }
+        .btn-edit:hover { background: #fde68a; }
+
+        .btn-delete { background: #fee2e2; color: var(--danger); }
+        .btn-delete:hover { background: #fca5a5; }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 0.85rem 1rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        tr:hover {
+            background-color: #fafafa;
+        }
+
+        .genre-badge {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+        }
+
+        .badge-stock {
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .stock-available { background: #dcfce7; color: #166534; }
+        .stock-out { background: #fee2e2; color: #991b1b; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            padding: 1.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-header h3 { font-size: 1.25rem; color: var(--text-main); }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-muted); }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .form-group { margin-bottom: 1rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.35rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-cancel { background: #e2e8f0; color: #475569; }
+        .btn-cancel:hover { background: #cbd5e1; }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: white;
+            padding: 0.85rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 200;
+            font-size: 0.95rem;
+        }
+
+        .toast.success { background: #059669; }
+        .toast.error { background: #dc2626; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Library Book Management</h1>
+        <p class="subtitle">Assignment 15 &bull; Book Catalog CRUD with Borrow & Return Actions</p>
+    </header>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📖</div>
+                <div>
+                    <div class="stat-val" id="statTitles">0</div>
+                    <div class="stat-lbl">Unique Titles</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div>
+                    <div class="stat-val" id="statTotalCopies">0</div>
+                    <div class="stat-lbl">Total Copies</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div>
+                    <div class="stat-val" id="statAvailable">0</div>
+                    <div class="stat-lbl">Available Copies</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏷️</div>
+                <div>
+                    <div class="stat-val" id="statBorrowed">0</div>
+                    <div class="stat-lbl">Currently Borrowed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="card">
+            <div class="controls">
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="Search by title, author, or ISBN..." oninput="handleSearch()">
+                    <select id="genreFilter" onchange="handleSearch()">
+                        <option value="All">All Genres</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="openAddModal()">
+                    <span>➕</span> Add New Book
+                </button>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Book Title</th>
+                            <th>Author</th>
+                            <th>Genre</th>
+                            <th>ISBN</th>
+                            <th>Year</th>
+                            <th>Availability</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="booksTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="bookModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add Book</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="bookForm" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="bookId">
+                <div class="form-group">
+                    <label for="bookTitle">Book Title *</label>
+                    <input type="text" id="bookTitle" required placeholder="e.g. Fluent Python">
+                </div>
+                <div class="form-group">
+                    <label for="bookAuthor">Author *</label>
+                    <input type="text" id="bookAuthor" required placeholder="e.g. Luciano Ramalho">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookGenre">Genre *</label>
+                        <input type="text" id="bookGenre" required placeholder="e.g. Programming">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookYear">Publication Year *</label>
+                        <input type="number" id="bookYear" required min="1000" max="2050" placeholder="e.g. 2022">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookIsbn">ISBN *</label>
+                        <input type="text" id="bookIsbn" required placeholder="e.g. 978-1491946008">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCopies">Total Copies *</label>
+                        <input type="number" id="bookCopies" required min="1" max="1000" value="3">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn">Save Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let allBooks = [];
+
+        async function fetchStats() {
+            try {
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                document.getElementById('statTitles').textContent = data.total_titles;
+                document.getElementById('statTotalCopies').textContent = data.total_copies;
+                document.getElementById('statAvailable').textContent = data.available_copies;
+                document.getElementById('statBorrowed').textContent = data.borrowed_copies;
+
+                const genreSelect = document.getElementById('genreFilter');
+                const currentVal = genreSelect.value;
+                genreSelect.innerHTML = `<option value="All">All Genres</option>`;
+                data.genres.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g;
+                    opt.textContent = g;
+                    if (g === currentVal) opt.selected = true;
+                    genreSelect.appendChild(opt);
+                });
+            } catch (err) {
+                console.error("Failed to load stats", err);
+            }
+        }
+
+        async function loadBooks(search = '', genre = 'All') {
+            try {
+                let url = '/api/books?';
+                if (search) url += `search=${encodeURIComponent(search)}&`;
+                if (genre && genre !== 'All') url += `genre=${encodeURIComponent(genre)}&`;
+
+                const res = await fetch(url);
+                allBooks = await res.json();
+                renderTable(allBooks);
+                fetchStats();
+            } catch (err) {
+                showToast("Failed to fetch books", "error");
+            }
+        }
+
+        function renderTable(books) {
+            const tbody = document.getElementById('booksTableBody');
+            tbody.innerHTML = '';
+
+            if (books.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2rem; color: #94a3b8;">No matching books in catalog.</td></tr>`;
+                return;
+            }
+
+            books.forEach(b => {
+                const isAvailable = b.available_copies > 0;
+                const stockBadge = isAvailable
+                    ? `<span class="badge-stock stock-available">${b.available_copies} of ${b.total_copies} available</span>`
+                    : `<span class="badge-stock stock-out">Out of Stock (0 of ${b.total_copies})</span>`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(b.title)}</strong></td>
+                    <td>${escapeHtml(b.author)}</td>
+                    <td><span class="genre-badge">${escapeHtml(b.genre)}</span></td>
+                    <td><code>${escapeHtml(b.isbn)}</code></td>
+                    <td>${b.publication_year}</td>
+                    <td>${stockBadge}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-action btn-borrow" onclick="borrowBook(${b.id})" ${!isAvailable ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>Borrow</button>
+                        <button class="btn-action btn-return" onclick="returnBook(${b.id})" ${b.available_copies >= b.total_copies ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>Return</button>
+                        <button class="btn-action btn-edit" onclick="openEditModal(${b.id})">Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteBook(${b.id}, '${escapeHtml(b.title)}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function handleSearch() {
+            const search = document.getElementById('searchInput').value;
+            const genre = document.getElementById('genreFilter').value;
+            loadBooks(search, genre);
+        }
+
+        function openAddModal() {
+            document.getElementById('modalTitle').textContent = "Add New Book";
+            document.getElementById('bookId').value = "";
+            document.getElementById('bookForm').reset();
+            document.getElementById('bookModal').classList.add('active');
+        }
+
+        function openEditModal(id) {
+            const book = allBooks.find(b => b.id === id);
+            if (!book) return;
+
+            document.getElementById('modalTitle').textContent = "Edit Book";
+            document.getElementById('bookId').value = book.id;
+            document.getElementById('bookTitle').value = book.title;
+            document.getElementById('bookAuthor').value = book.author;
+            document.getElementById('bookGenre').value = book.genre;
+            document.getElementById('bookYear').value = book.publication_year;
+            document.getElementById('bookIsbn').value = book.isbn;
+            document.getElementById('bookCopies').value = book.total_copies;
+
+            document.getElementById('bookModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('bookModal').classList.remove('active');
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('bookId').value;
+            const payload = {
+                title: document.getElementById('bookTitle').value,
+                author: document.getElementById('bookAuthor').value,
+                genre: document.getElementById('bookGenre').value,
+                publication_year: parseInt(document.getElementById('bookYear').value),
+                isbn: document.getElementById('bookIsbn').value,
+                total_copies: parseInt(document.getElementById('bookCopies').value)
+            };
+
+            try {
+                if (id) {
+                    const res = await fetch(`/api/books/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const resData = await res.json();
+                    if (!res.ok) throw new Error(resData.detail || "Failed to update book");
+                    showToast("Book updated successfully", "success");
+                } else {
+                    const res = await fetch('/api/books', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const resData = await res.json();
+                    if (!res.ok) throw new Error(resData.detail || "Failed to add book");
+                    showToast("Book added to catalog successfully", "success");
+                }
+                closeModal();
+                handleSearch();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function borrowBook(id) {
+            try {
+                const res = await fetch(`/api/books/${id}/borrow`, { method: 'POST' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "Cannot borrow");
+                showToast(data.message, "success");
+                handleSearch();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function returnBook(id) {
+            try {
+                const res = await fetch(`/api/books/${id}/return`, { method: 'POST' });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.detail || "Cannot return");
+                showToast(data.message, "success");
+                handleSearch();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function deleteBook(id, title) {
+            if (!confirm(`Are you sure you want to delete "${title}" from the catalog?`)) return;
+
+            try {
+                const res = await fetch(`/api/books/${id}`, { method: 'DELETE' });
+                if (!res.ok) throw new Error("Failed to delete book");
+                showToast(`Book "${title}" deleted successfully`, "success");
+                handleSearch();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        function showToast(msg, type = "success") {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        // Initial Load
+        loadBooks();
+    </script>
+</body>
+</html>
